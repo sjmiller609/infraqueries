@@ -30,14 +30,14 @@ application.add_url_rule('/<username>', 'hello', (lambda username:
 
 def get_state(access,secret):
     if access == "0000" and secret == "0000":
-        payload = {
-                  "vm1":{"az":"us-west-2"},
-                  "vm2":{"az":"us-west-1"},
-                  "vm3":{"az":"us-west-2"},
-                  "vm4":{"az":"us-east-2"},
-                  "vm5":{"az":"us-east-1"},
-                  "vm6":{"az":"ca-central-1"}
-                  }
+        payload = [
+                  {"name":"vm1","az":"us-west-2"},
+                  {"name":"vm2","az":"us-west-1"},
+                  {"name":"vm3","az":"us-west-2"},
+                  {"name":"vm4","az":"us-east-2"},
+                  {"name":"vm5","az":"us-east-1"},
+                  {"name":"vm6","az":"ca-central-1"}
+                  ]
         return json.dumps(payload)
     return None
 
