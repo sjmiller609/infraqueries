@@ -1,0 +1,10 @@
+*.pyc
+./eb-virt
+./eb-virt/*
+.vagrant
+.vagrant/*
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
