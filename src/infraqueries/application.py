@@ -1,9 +1,5 @@
 from flask import Flask, request, abort
-import json
 from flask_cors import CORS, cross_origin
-
-def say_hello(username = "World"):
-    return '<p>Hello %s!</p>\n' % username
 
 # some bits of text for the page.
 header_text = '''
@@ -15,45 +11,36 @@ instructions = '''
 home_link = '<p><a href="/">Back</a></p>\n'
 footer_text = '</body>\n</html>'
 
-# EB looks for an 'application' callable by default.
-application = Flask(__name__)
-CORS(application)
+def main():
+	# EB looks for an 'application' callable by default.
+	application = Flask(__name__)
+	CORS(application)
 
-# add a rule for the index page.
-application.add_url_rule('/', 'index', (lambda: header_text +
-    say_hello() + instructions + footer_text))
+	from route_functions.get_state import get_state
+	@application.route('/state',methods=["GET"])
+	def givestate():
+	    access = request.args.get('access_key',None,type=str)
+	    secret = request.args.get('secret_key',None,type=str)
+	    payload = get_state(access,secret)
+	    if not payload:
+		abort(403)
+	    return payload
 
-# add a rule when the page is accessed with a name appended to the site
-# URL.
-application.add_url_rule('/<username>', 'hello', (lambda username:
-    header_text + say_hello(username) + home_link + footer_text))
+	from route_functions.get_vm_status import get_vm_status
+	@application.route('/vmstatus',methods=["GET"])
+	def givevmstate():
+	    payload = get_vm_status(request)
+	    if not payload:
+		abort(403)
+	    return payload
 
-def get_state(access,secret):
-    if access == "0000" and secret == "0000":
-        payload = [
-                  {"name":"vm1","az":"us-west-2"},
-                  {"name":"vm2","az":"us-west-1"},
-                  {"name":"vm3","az":"us-west-2"},
-                  {"name":"vm4","az":"us-east-2"},
-                  {"name":"vm5","az":"us-east-1"},
-                  {"name":"vm6","az":"ca-central-1"}
-                  ]
-        return json.dumps(payload)
-    return None
 
-@application.route('/state',methods=["GET"])
-def givestate():
-    access = request.args.get('access_key',None,type=str)
-    secret = request.args.get('secret_key',None,type=str)
-    payload = get_state(access,secret)
-    if not payload:
-        abort(403)
-    return payload
-   
+	# Setting debug to True enables debug output. This line should be
+	# removed before deploying a production app.
+	application.debug = False
+	application.run(host="0.0.0.0")  
 
 # run the app.
 if __name__ == "__main__":
-    # Setting debug to True enables debug output. This line should be
-    # removed before deploying a production app.
-    application.debug = False
-    application.run(host="0.0.0.0")
+    main()
+

@@ -28,7 +28,6 @@ Vagrant.configure("2") do |config|
      virtualenv ~/eb-virt
      source ~/eb-virt/bin/activate
      pip install flask flask-cors
-
      curl -sL https://deb.nodesource.com/setup_8.x > /tmp/setup_8.x.sh
    SHELL
 
