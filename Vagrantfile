@@ -19,15 +19,15 @@ Vagrant.configure("2") do |config|
    config.vm.provision "shell", inline: <<-SHELL
      apt-get update
      apt-get install -y build-essential
-     apt-get install -y nmap git python-pip python-virtualenv
-     pip install --upgrade virtualenv
+     #apt-get install -y nmap git python-pip python-virtualenv
+     #pip install --upgrade virtualenv
    SHELL
 
    config.vm.provision "shell", privileged: false, inline: <<-SHELL
-     pip install --upgrade --user awsebcli
-     virtualenv ~/eb-virt
-     source ~/eb-virt/bin/activate
-     pip install flask flask-cors
+     #pip install --upgrade --user awsebcli
+     #virtualenv ~/eb-virt
+     #source ~/eb-virt/bin/activate
+     #pip install flask flask-cors
 
      curl -sL https://deb.nodesource.com/setup_8.x > /tmp/setup_8.x.sh
    SHELL
@@ -36,6 +36,7 @@ Vagrant.configure("2") do |config|
    config.vm.provision "shell", inline: <<-SHELL
      /bin/bash /tmp/setup_8.x.sh
      apt-get install -y nodejs
+     npm install npm@latest -g
    SHELL
 
    #install roots
@@ -50,6 +51,7 @@ Vagrant.configure("2") do |config|
      source /home/vagrant/.bashrc
      npm install -g roots
      cd /vagrant/src/frontend
+     npm install acorn --no-bin-links
      npm install
    SHELL
 

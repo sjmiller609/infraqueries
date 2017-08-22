@@ -2,6 +2,7 @@
   "name": "service-monitor",
   "description": "test",
   "dependencies": {
+    "acorn": "^5.1.1",
     "autoprefixer-stylus": "^0.9.x",
     "axis": "^0.6.x",
     "coffee-script": "^1.x",
