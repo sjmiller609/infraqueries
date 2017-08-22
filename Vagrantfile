@@ -48,7 +48,7 @@ Vagrant.configure("2") do |config|
      echo 'unset MANPATH # delete if you already modified MANPATH elsewhere in your config' >> "/home/vagrant/.bashrc"
      echo 'export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"' >> "/home/vagrant/.bashrc"
      source /home/vagrant/.bashrc
-     npm install roots -g
+     npm install -g roots
      cd /vagrant/src/frontend
      npm install
    SHELL
