@@ -10,35 +10,39 @@ Vagrant.configure("2") do |config|
      vb.cpus = "4"
    end
 
-   config.vm.network "forwarded_port", guest: 5000, host_ip: "127.0.0.1", host: 5000
    config.vm.network "forwarded_port", guest: 1111, host_ip: "127.0.0.1", host: 1111
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
    config.vm.provision "shell", inline: <<-SHELL
+
      apt-get update
+     # install build essential
      apt-get install -y build-essential
-     apt-get install -y nmap git python-pip python-virtualenv
+     # install some coding utilities
+     apt-get install -y tree nmap
+
+     # install python stuff
+     apt-get install -y python-pip python-virtualenv
      pip install --upgrade virtualenv
+
+     #deployment modules
+     pip install s3-deploy-website
+
    SHELL
 
+   # set up roots, a static site generator available on node
    config.vm.provision "shell", privileged: false, inline: <<-SHELL
-     pip install --upgrade --user awsebcli
-     virtualenv ~/eb-virt
-     source ~/eb-virt/bin/activate
-     pip install flask flask-cors
      curl -sL https://deb.nodesource.com/setup_8.x > /tmp/setup_8.x.sh
    SHELL
 
-   #install node, npm
    config.vm.provision "shell", inline: <<-SHELL
      /bin/bash /tmp/setup_8.x.sh
      apt-get install -y nodejs
      npm install npm@latest -g
    SHELL
 
-   #install roots
    config.vm.provision "shell", privileged: false, inline: <<-SHELL
      mkdir "/home/vagrant/npm-packages"
      echo "prefix=/home/vagrant/.npm-packages" >> "/home/vagrant/.npmrc"
@@ -53,5 +57,6 @@ Vagrant.configure("2") do |config|
      npm install acorn --no-bin-links
      npm install
    SHELL
+   # done setting up roots
 
 end
