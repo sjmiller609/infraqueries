@@ -1,9 +1,20 @@
 # -*- coding: utf-8 -*-
+import json
 
 
 def handler(event, context):
-    access = event.get('access_key')
-    secret = event.get('secret_key')
+    try:
+      access = event["queryStringParameters"]['access_key']
+      secret = event["queryStringParameters"]['secret_key']
+    except KeyError:
+      access = event.get('access_key')
+      secret = event.get('secret_key')
+
+    if not (access == "0000" and secret == "0000"):
+        payload = json.dumps(event)
+        return {"statusCode":403,
+               "headers": {"Content-Type": "application/json"},
+               "body": payload}
 
     payload = """\
 	[
