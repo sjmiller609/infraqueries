@@ -3,7 +3,7 @@
 
 Vagrant.configure("2") do |config|
 
-   config.vm.box = "ubuntu/trusty64"
+   config.vm.box = "ubuntu/xenial64"
    config.vm.provider "virtualbox" do |vb|
   #   # Customize the amount of memory on the VM:
      vb.memory = "4096"
@@ -15,48 +15,53 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-   config.vm.provision "shell", inline: <<-SHELL
 
+   config.vm.provision "shell", run: "always", inline: <<-SHELL
      apt-get update
      # install build essential
-     apt-get install -y build-essential
+     apt-get install -y build-essential libbz2-dev libssl-dev libreadline-dev \
+                             libsqlite3-dev tk-dev virtualenv
+     
+     # optional scientific package headers (for Numpy, Matplotlib, SciPy, etc.)
+     sudo apt-get install -y libpng-dev libfreetype6-dev 
      # install some coding utilities
      apt-get install -y tree nmap
 
-     # install python stuff
-     apt-get install -y python-pip python-virtualenv
-     pip install --upgrade virtualenv
-
-     #deployment modules
-     pip install s3-deploy-website
-
-   SHELL
-
-   # set up roots, a static site generator available on node
-   config.vm.provision "shell", privileged: false, inline: <<-SHELL
+     #stuff for node
      curl -sL https://deb.nodesource.com/setup_8.x > /tmp/setup_8.x.sh
-   SHELL
-
-   config.vm.provision "shell", inline: <<-SHELL
      /bin/bash /tmp/setup_8.x.sh
      apt-get install -y nodejs
      npm install npm@latest -g
    SHELL
 
    config.vm.provision "shell", privileged: false, inline: <<-SHELL
-     mkdir "/home/vagrant/npm-packages"
-     echo "prefix=/home/vagrant/.npm-packages" >> "/home/vagrant/.npmrc"
-     echo 'NPM_PACKAGES="/home/vagrant/.npm-packages"' >> "/home/vagrant/.bashrc"
-     echo 'PATH="$NPM_PACKAGES/bin:$PATH"' >> "/home/vagrant/.bashrc"
-     echo '# Unset manpath so we can inherit from /etc/manpath via the `manpath` command' >> "/home/vagrant/.bashrc"
-     echo 'unset MANPATH # delete if you already modified MANPATH elsewhere in your config' >> "/home/vagrant/.bashrc"
-     echo 'export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"' >> "/home/vagrant/.bashrc"
-     source /home/vagrant/.bashrc
+     mkdir -p "/home/ubuntu/npm-packages"
+     prefix=/home/ubuntu/.npm-packages
+     echo 'prefix=/home/ubuntu/.npm-packages' >> "/home/ubuntu/.bashrc"
+     export NPM_PACKAGES="/home/ubuntu/.npm-packages"
+     echo 'export NPM_PACKAGES=/home/ubuntu/.npm-packages' >> "/home/ubuntu/.bashrc"
+     export PATH="$NPM_PACKAGES/bin:$PATH"
+     echo 'export PATH=$NPM_PACKAGES/bin:$PATH' >> "/home/ubuntu/.bashrc"
+     export MANPATH=$NPM_PACKAGES/share/man:$(manpath)
+     echo 'export MANPATH=$NPM_PACKAGES/share/man:$(manpath)' >> "/home/ubuntu/.bashrc"
+
      npm install -g roots
      cd /vagrant/src/frontend
      npm install acorn --no-bin-links
      npm install
+
+     # installing python stuff
+     curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
+     export PATH="/home/ubuntu/.pyenv/bin:$PATH"
+     eval "$(pyenv init -)"
+     eval "$(pyenv virtualenv-init -)"
+     pyenv install 2.7.13
+     pyenv local 2.7.13
+     cd /vagrant/src/infraqueries
+     pip install virtualenv
+     virtualenv 
+     #pip install python-lambda
+     
    SHELL
-   # done setting up roots
 
 end

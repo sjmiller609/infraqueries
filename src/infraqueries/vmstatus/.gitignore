@@ -1,3 +1,7 @@
 pylambda
+*.pyc
+__pycache__
 dist
 dist/*
+venv/*
+venv

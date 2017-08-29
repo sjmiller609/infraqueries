@@ -2,12 +2,12 @@ site: public
 s3_bucket: aws-website-servicemonitor-25dts
 cloudfront_distribution_id: EFBG4S2P1E3Y5
 
-cache_rules:
-  - match: "/assets/*"
-    maxage: 30 days
-
-  - match: "/css/*"
-    maxage: 30 days
-
-  - match: "*"
-    maxage: 1 hour
+# cache_rules:
+#   - match: "/assets/*"
+#     maxage: 30 days
+# 
+#   - match: "/css/*"
+#     maxage: 30 days
+# 
+#   - match: "*"
+#     maxage: 1 hour

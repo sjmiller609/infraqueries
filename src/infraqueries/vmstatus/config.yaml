@@ -2,7 +2,7 @@ region: us-west-2
 
 function_name: vmstatus
 handler: service.handler
-role: lambda_basic_execution
+
 description: gets status of vms
 runtime: python2.7
 
@@ -14,4 +14,3 @@ aws_secret_access_key:
 # dist_directory: dist
 # timeout: 15
 # memory_size: 512
-#
