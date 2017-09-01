@@ -59,6 +59,6 @@ lambda deploy
 
 the link below calls the deployed function, and is the URL you will call from the front end
 
-###[call function](https://0o5eza3v7a.execute-api.us-west-2.amazonaws.com/prod/vmstatus?access_key=0000&secret_key=0000)
+### [call function](https://0o5eza3v7a.execute-api.us-west-2.amazonaws.com/prod/vmstatus?access_key=0000&secret_key=0000)
 
 
