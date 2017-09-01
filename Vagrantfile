@@ -19,48 +19,51 @@ Vagrant.configure("2") do |config|
    config.vm.provision "shell", run: "always", inline: <<-SHELL
      apt-get update
      # install build essential
-     apt-get install -y build-essential libbz2-dev libssl-dev libreadline-dev \
-                             libsqlite3-dev tk-dev virtualenv
-     
-     # optional scientific package headers (for Numpy, Matplotlib, SciPy, etc.)
-     sudo apt-get install -y libpng-dev libfreetype6-dev 
+     apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+xz-utils tk-dev
+
      # install some coding utilities
-     apt-get install -y tree nmap
+     apt-get install -y tree nmap git
 
      #stuff for node
-     curl -sL https://deb.nodesource.com/setup_8.x > /tmp/setup_8.x.sh
-     /bin/bash /tmp/setup_8.x.sh
-     apt-get install -y nodejs
-     npm install npm@latest -g
+     #curl -sL https://deb.nodesource.com/setup_8.x > /tmp/setup_8.x.sh
+     #/bin/bash /tmp/setup_8.x.sh
+     #apt-get install -y nodejs
+
+     #mkdir -p "/home/ubuntu/npm-packages"
+
+     #echo 'prefix=/home/ubuntu/.npm-packages' 		      >> /home/ubuntu/.bashrc
+     #echo 'export NPM_PACKAGES=/home/ubuntu/.npm-packages'    >> /home/ubuntu/.bashrc
+     #echo 'export PATH=$NPM_PACKAGES/bin:$PATH'               >> /home/ubuntu/.bashrc
+     #echo 'export MANPATH=$NPM_PACKAGES/share/man:$(manpath)' >> /home/ubuntu/.bashrc
+
+     #source /home/ubuntu/.bashrc
+
+     #npm install npm@latest -g
+     #npm install --no-bin-links acorn
+     #npm install -g roots
+
+     #chown -R ubuntu:ubuntu /home/ubuntu/
+
    SHELL
 
    config.vm.provision "shell", privileged: false, inline: <<-SHELL
-     mkdir -p "/home/ubuntu/npm-packages"
-     prefix=/home/ubuntu/.npm-packages
-     echo 'prefix=/home/ubuntu/.npm-packages' >> "/home/ubuntu/.bashrc"
-     export NPM_PACKAGES="/home/ubuntu/.npm-packages"
-     echo 'export NPM_PACKAGES=/home/ubuntu/.npm-packages' >> "/home/ubuntu/.bashrc"
-     export PATH="$NPM_PACKAGES/bin:$PATH"
-     echo 'export PATH=$NPM_PACKAGES/bin:$PATH' >> "/home/ubuntu/.bashrc"
-     export MANPATH=$NPM_PACKAGES/share/man:$(manpath)
-     echo 'export MANPATH=$NPM_PACKAGES/share/man:$(manpath)' >> "/home/ubuntu/.bashrc"
 
-     npm install -g roots
      cd /vagrant/src/frontend
-     npm install acorn --no-bin-links
-     npm install
 
-     # installing python stuff
+     ## installing python stuff
      curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
      export PATH="/home/ubuntu/.pyenv/bin:$PATH"
      eval "$(pyenv init -)"
      eval "$(pyenv virtualenv-init -)"
      pyenv install 2.7.13
      pyenv local 2.7.13
-     cd /vagrant/src/infraqueries
      pip install virtualenv
-     virtualenv 
-     #pip install python-lambda
+     cd /vagrant/src/infraqueries/vmstatus
+     virtualenv env --always-copy
+     source env/bin/activate
+     pip install python-lambda
      
    SHELL
 

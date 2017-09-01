@@ -11,3 +11,5 @@
 *node_modules*
 src/frontend/public*
 *.log
+src/infraqueries/vmstatus/env/
+src/infraqueries/vmstatus/env/*
