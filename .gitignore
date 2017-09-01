@@ -10,3 +10,4 @@
 !.elasticbeanstalk/*.global.yml
 *node_modules*
 src/frontend/public*
+*.log
